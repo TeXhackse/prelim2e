@@ -19,7 +19,7 @@ prelim2e 2020/11/22 v2.00 Prelim2e LaTeX Package
 
 The files
 * prelim2e.sty
-can be generated from the qrbill.dtx by processing the qrbill.ins-file.
+can be generated from the prelim2e.dtx by processing the prelim2e.ins-file.
 
 ## Version History
 
