@@ -151,6 +151,14 @@
 %
 % ^^A -----------------------------
 %
+%  \section{Requirements}
+%  Version 2.00 requires the kernel hook management and is no longer
+%  useable with LaTeX versions older than 2020/10/01. In case you have
+%  any understandable  reason, which requires the old implementation,
+%  feel free to contact the maintainer.
+%
+% ^^A -----------------------------
+%
 %  \section{Usage}
 %  ^^A
 %  Simply using this package via 
@@ -337,6 +345,16 @@
 % ^^A -----------------------------
 %
 %  \subsection{Initial Code}
+%  The implementation of version 2.00 requires a the kernel's hook management.
+%  Therefore we test if it's available and throw an error message if not. 
+%
+%    \begin{macrocode}
+\providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
+\IfFormatAtLeastTF{2020/10/01}{}{%
+	\PackageError{prelim2e}{Format file is too old. Please update your LaTeX distribution.}{prelim2e of version 2.0 requires a format version of at least 2020/10/01}%
+}
+%    \end{macrocode}
+
 %  ^^A
 %  \begin{macro}{\if@prelim@draft}
 %  \cs{if@prelim@draft} is used to flag the use of the \option{draft}
@@ -472,7 +490,7 @@
 %  \subsection{Loading packages}
 %  ^^A
 %     \changes{v1.20}{1997/05/12}{check \cs{if@prelim@scrtime}}
-% 	  \canges{v2.00}{2020/11/22}{remove \package{everyshi}}
+% 	  \changes{v2.00}{2020/11/22}{remove \package{everyshi}}
 %  We need the \package{scrtime} package if the \option{scrtime} option is specified.
 %    \begin{macrocode}
 \if@prelim@scrtime
