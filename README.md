@@ -1,7 +1,6 @@
 # The LaTeX package `prelim2e`
 
-Copyright (C) Martin Schröder, 1995–2009
-Copyright (C)  Marei Peischl (peiTeX)  <marei@peitex.de>, 2020
+Copyright (C) 1995–2009 Martin schröder, 2020 Marei Peischl (peiTeX)  <marei@peitex.de>
 
 prelim2e 2020/11/22 v2.00 Prelim2e LaTeX Package
 
