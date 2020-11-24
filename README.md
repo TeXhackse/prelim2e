@@ -2,7 +2,7 @@
 
 Copyright (C) 1995–2009 Martin Schröder, 2020 Marei Peischl (peiTeX)  <marei@peitex.de>
 
-prelim2e 2020/11/22 v2.00 Prelim2e LaTeX Package
+prelim2e 2020/11/24 v2.00 Prelim2e LaTeX Package
 
 ***************************************************************************
 
@@ -23,4 +23,4 @@ can be generated from the prelim2e.dtx by processing the prelim2e.ins-file.
 
 ## Version History
 
- * v2.00 (2020-11-22) Reimplement the package using the kernel's hook management and switch to L3 Syntax
+ * v2.00 (2020-11-24) Reimplement the package using the kernel's hook management and switch to L3 Syntax

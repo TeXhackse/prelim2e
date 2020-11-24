@@ -30,14 +30,15 @@
 %
 % \fi
 %     \changes{v1.01}{1995/05/02}{Date added to \cs{NeedsTeXFormat}}
+%     \changes{v2.00}{2020/11/24}{Complete rework to use the kernel methods instead of everyshi}
 % \iffalse
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<package>\ProvidesExplPackage{prelim2e}
-%<package>         {2020/11/22}{2.0}{prelim2e Package}
+%<package>         {2020/11/24}{2.0}{prelim2e Package}
 %
 %<*driver>
 \ProvidesFile{prelim2e.drv}
-      [2020/11/22 v2.0 Driver for prelim2e Package]
+      [2020/11/24 v2.0 Driver for prelim2e Package]
 \documentclass{l3doc}
 \usepackage{url}
 \DeclareUrlCommand\CTANlink{\def\UrlLeft{CTAN:\space}\def\UrlRight{}\urlstyle{tt}}
@@ -47,28 +48,19 @@
 \EnableCrossrefs
 \RecordChanges    % Gather update information
 %%\DisableCrossrefs% Say \DisableCrossrefs if index is ready
-\CodelineIndex    % Index code by line number
-%\OnlyDescription  % comment out for implementation details
+\OnlyDescription  % comment out for implementation details
 %%\OldMakeIndex    % use if your MakeIndex is pre-v2.9
 \setcounter{IndexColumns}{2}
+\oddsidemargin=2cm
+\marginparwidth=2.5cm
 % onecolumn glossary
-\makeatletter
-  \renewenvironment{theglossary}{%
-  \glossary@prologue
-  \setlength\emergencystretch{5em}
-  \GlossaryParms \let\item\@idxitem \ignorespaces}{}
-\makeatother
-\setlength{\IndexMin}{40ex}
-\setlength{\columnseprule}{.4pt}
-\addtolength{\oddsidemargin}{2cm}
-\addtolength{\textwidth}{-2cm}
 \begin{document}
    \DocInput{prelim2e.dtx}
 \end{document}
 %</driver>
 % \fi
 %
-% \CheckSum{89}
+% \CheckSum{104}
 %
 % \CharacterTable
 % {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -154,7 +146,7 @@
 %  \section{Usage}
 %  ^^A
 %  Simply using this package via 
-%  \mbox{\cs{usepackage\{}\package{prelim2e}\texttt{\}}} produces a
+%  \mbox{\cs{usepackage}\texttt{\{}\package{prelim2e}\texttt{\}}} produces a
 %  text in the form of ``Preliminary version -- \today''.
 %
 % \begin{function}{\PrelimText,\PrelimWords}
@@ -268,9 +260,6 @@
 %
 % ^^A -----------------------------
 %
-%  \StopEventually{^^A
-%
-%
 % ^^A -----------------------------
 %
 %  \section{Acknowledgements}
@@ -323,8 +312,7 @@
 %        \newblock \LaTeX2.09 package.
 %  \end{thebibliography}
 %
-%  }
-%
+% \StopEventually{\PrintChanges}
 %
 % ^^A -----------------------------
 %
@@ -403,7 +391,7 @@
 %  The \option{draft} and \option{final} option control the behavior
 %  of \package{prelim2e}: Only if \option{final} is used in 
 %  \cs{documentclass} or 
-%  \mbox{\cs{usepackage\{}\package{prelim2e}\texttt{\}}} text is
+%  \mbox{\cs{usepackage}\texttt{\{}\package{prelim2e}\texttt{\}}} text is
 %  produced.
 %    \begin{macrocode}
 \DeclareOption{draft}{\bool_gset_true:N \g_prelim_draft_bool}
@@ -493,7 +481,7 @@
 %  \subsection{Loading packages}
 %  ^^A
 %     \changes{v1.20}{1997/05/12}{check \cs{if@prelim@scrtime}}
-% 	  \changes{v2.00}{2020/11/22}{remove \package{everyshi}}
+% 	  \changes{v2.00}{2020/11/24}{remove \package{everyshi}}
 %  We need the \package{scrtime} package if the \option{scrtime} option is specified.
 %    \begin{macrocode}
 \bool_if:NT \g_prelim_scrtime_bool {
@@ -541,7 +529,7 @@
 %
 %  \subsection{Putting the text below the page}
 %  ^^A
-% \changes{v2.00}{2020/11/22}{Use \LaTeX{} kernel method instead of everyshi}
+% \changes{v2.00}{2020/11/24}{Use \LaTeX{} kernel method instead of everyshi}
 %  We put the text below the page via \cs{AddtoHook{shipout/foreground}}.
 %  This is done by \cs{\__prelim_every_shipout:}.
 %
