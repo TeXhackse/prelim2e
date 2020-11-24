@@ -32,8 +32,8 @@
 %     \changes{v1.01}{1995/05/02}{Date added to \cs{NeedsTeXFormat}}
 % \iffalse
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-%<package>\ProvidesPackage{prelim2e}
-%<package>         [2020/11/22 v2.0 prelim2e Package]
+%<package>\ProvidesExplPackage{prelim2e}
+%<package>         {2020/11/22}{2.0}{prelim2e Package}
 %
 %<*driver>
 \ProvidesFile{prelim2e.drv}
@@ -41,9 +41,6 @@
 \documentclass{ltxdoc}
 \usepackage{url}
 \DeclareUrlCommand\CTANlink{\def\UrlLeft{CTAN:\space}\def\UrlRight{}\urlstyle{tt}}
-
-\usepackage{lmodern,microtype}
-\usepackage{hypdoc}
 \usepackage{geometry}
 \usepackage[scrtime]{prelim2e}
 \GetFileInfo{prelim2e.sty}
@@ -67,33 +64,28 @@
 \addtolength{\textwidth}{-2cm}
 \begin{document}
    \DocInput{prelim2e.dtx}
-   \PrintIndex\PrintChanges
-   %  Make sure that the index is not printed twice
-   %  (ltxdoc.cfg might have a second \PrintIndex command)
-   \let\PrintChanges\relax
-   \let\PrintIndex\relax
 \end{document}
 %</driver>
 % \fi
 %
-% \CheckSum{129}
+% \CheckSum{89}
 %
-%% \CharacterTable
-%% {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
-%%  Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
-%%  Digits        \0\1\2\3\4\5\6\7\8\9
-%%  Exclamation   \!     Double quote  \"     Hash (number) \#
-%%  Dollar        \$     Percent       \%     Ampersand     \&
-%%  Acute accent  \'     Left paren    \(     Right paren   \)
-%%  Asterisk      \*     Plus          \+     Comma         \,
-%%  Minus         \-     Point         \.     Solidus       \/
-%%  Colon         \:     Semicolon     \;     Less than     \<
-%%  Equals        \=     Greater than  \>     Question mark \?
-%%  Commercial at \@     Left bracket  \[     Backslash     \\
-%%  Right bracket \]     Circumflex    \^     Underscore    \_
-%%  Grave accent  \`     Left brace    \{     Vertical bar  \|
-%%  Right brace   \}     Tilde         \~}
-%%
+% \CharacterTable
+% {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%  Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%  Digits        \0\1\2\3\4\5\6\7\8\9
+%  Exclamation   \!     Double quote  \"     Hash (number) \#
+%  Dollar        \$     Percent       \%     Ampersand     \&
+%  Acute accent  \'     Left paren    \(     Right paren   \)
+%  Asterisk      \*     Plus          \+     Comma         \,
+%  Minus         \-     Point         \.     Solidus       \/
+%  Colon         \:     Semicolon     \;     Less than     \<
+%  Equals        \=     Greater than  \>     Question mark \?
+%  Commercial at \@     Left bracket  \[     Backslash     \\
+%  Right bracket \]     Circumflex    \^     Underscore    \_
+%  Grave accent  \`     Left brace    \{     Vertical bar  \|
+%  Right brace   \}     Tilde         \~}
+%
 %
 %
 %  \renewcommand{\PrelimWords}{^^A
@@ -360,7 +352,7 @@
 %  \cs{if@prelim@draft} is used to flag the use of the \option{draft}
 %  or \option{final} option.
 %    \begin{macrocode}
-\newif\if@prelim@draft
+\bool_new:N \g_prelim_draft_bool
 %    \end{macrocode}
 %  \end{macro}
 %
@@ -369,7 +361,7 @@
 %  \cs{if@prelim@time} is used to flag the use of the \option{time}
 %  option.
 %    \begin{macrocode}
-\newif\if@prelim@time
+\bool_new:N \g_prelim_time_bool
 %    \end{macrocode}
 %  \end{macro}
 %
@@ -378,7 +370,7 @@
 %  \cs{if@prelim@scrtime} is used to flag the use of the \option{scrtime}
 %  option.
 %    \begin{macrocode}
-\newif\if@prelim@scrtime
+\bool_new:N \g_prelim_scrtime_bool
 %    \end{macrocode}
 %  \end{macro}
 %
@@ -406,8 +398,8 @@
 %  \mbox{\cs{usepackage\{}\package{prelim2e}\texttt{\}}} text is
 %  produced.
 %    \begin{macrocode}
-\DeclareOption{draft}{\@prelim@drafttrue}
-\DeclareOption{final}{\@prelim@draftfalse}
+\DeclareOption{draft}{\bool_gset_true:N \g_prelim_draft_bool}
+\DeclareOption{final}{\bool_gset_false:N \g_prelim_draft_bool}
 %    \end{macrocode}
 %
 %
@@ -423,17 +415,17 @@
 %     \changes{v1.3}{2009/05/29}{\option{norsk} option added}
 %    \begin{macrocode}
 \DeclareOption{danish}{%
-   \renewcommand{\PrelimWords}{Forel\o{}big version}}
+   \renewcommand{\PrelimWords}{Forel\o{}big~version}}
 \DeclareOption{english}{%
-   \renewcommand{\PrelimWords}{Preliminary version}}
+   \renewcommand{\PrelimWords}{Preliminary~version}}
 \DeclareOption{french}{%
-   \renewcommand{\PrelimWords}{Version pr\'eliminaire}}
+   \renewcommand{\PrelimWords}{Version~pr\'eliminaire}}
 \DeclareOption{german}{%
-   \renewcommand{\PrelimWords}{Vorl\"aufige Version}}
+   \renewcommand{\PrelimWords}{Vorl\"aufige~Version}}
 \DeclareOption{italian}{%
-   \renewcommand{\PrelimWords}{Versione preliminare}}
+   \renewcommand{\PrelimWords}{Versione~preliminare}}
 \DeclareOption{norsk}{%
-  \renewcommand{\PrelimWords}{Forel\o{}pig versjon}} 
+  \renewcommand{\PrelimWords}{Forel\o{}pig~versjon}}
 %    \end{macrocode}
 %
 %
@@ -453,7 +445,10 @@
 %  package.
 %  It implies \option{time}.
 %    \begin{macrocode}
-\DeclareOption{scrtime}{\@prelim@scrtimetrue\@prelim@timetrue}
+\DeclareOption{scrtime}{
+	\bool_gset_true:N \g_prelim_scrtime_bool
+	\bool_gset_true:N \g_prelim_time_bool
+}
 %    \end{macrocode}
 %
 %
@@ -467,10 +462,10 @@
 %  the \option{scrtime} option is selected.
 %    \begin{macrocode}
 \DeclareOption*{%
-   \if@prelim@scrtime
+   \bool_if:NT \g_prelim_scrtime_bool {
       \PassOptionsToPackage{\CurrentOption}{scrtime}%
-   \fi
-   }
+	}
+}
 %    \end{macrocode}
 %
 %
@@ -493,9 +488,9 @@
 % 	  \changes{v2.00}{2020/11/22}{remove \package{everyshi}}
 %  We need the \package{scrtime} package if the \option{scrtime} option is specified.
 %    \begin{macrocode}
-\if@prelim@scrtime
+\bool_if:NT \g_prelim_scrtime_bool {
    \RequirePackage{scrtime}
-\fi
+}
 %    \end{macrocode}
 %
 %
@@ -516,10 +511,11 @@
       \footnotesize
       \PrelimTextStyle
       \PrelimWords{} -- \today
-      \if@prelim@time
-         \ -- \thistime
-      \fi
-      }%
+      \bool_if:NT \g_prelim_time_bool {
+         \ ~--
+		\thistime
+		}
+	}%
    }
 %    \end{macrocode}
 %  \end{macro}
@@ -551,19 +547,36 @@
 %  the shipout box.
 %TODO
 %    \begin{macrocode}
-\ExplSyntaxOn
-\newcommand{\@Prelim@EveryShipout}{
+\tl_const:Nx \c__prelim_horigin_tl {
+	\tl_if_exist:NTF \c__shipout_horigin_tl {
+		\c__shipout_horigin_tl
+	} {
+		1in
+	}
+}
+
+\tl_const:Nx \c__prelim_vorigin_tl {
+	\tl_if_exist:NTF \c__shipout_vorigin_tl {
+		\c__shipout_vorigin_tl
+	} {
+		1in
+	}
+}
+
+\cs_new:Nn \__prelim_every_shipout: {
 %    \end{macrocode}
 %  We calculate the text position to match the implementation for versions before 2.0.
 %    \begin{macrocode}
-	\put(0cm,\dim_eval:n {-\l_shipout_box_ht_plus_dp_dim-1in+\topskip}){
+	\put( \c__shipout_horigin_tl,\dim_eval:n {-\c__shipout_vorigin_tl-\l_shipout_box_ht_plus_dp_dim-\topskip})
+	{
+		\vbox_to_ht:nn {0pt} {
 		\hbox_to_wd:nn {\l_shipout_box_wd_dim} {
 			\let\protect\relax
 			\hfill\PrelimText\hfill
 		}
+		}
 	}
 }
-\ExplSyntaxOff
 %    \end{macrocode}
 %  \end{macro}
 %
@@ -576,9 +589,9 @@
 %  kernel's hook management.
 %  But only if the \option{draft} option is used.
 %    \begin{macrocode}
-\if@prelim@draft
-  \AddToHook{shipout/foreground}{\@Prelim@EveryShipout}
-\fi
+\bool_if:NT \g_prelim_draft_bool {
+  \AddToHook{shipout/foreground}{\__prelim_every_shipout:}
+}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
