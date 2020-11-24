@@ -3,8 +3,8 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{prelim2e.ins}
 	[2020/11/22 v2.0 Installation script for Prelim2e Package]
-\preamble
 
+\preamble
 Copyright (C)   Martin Schröder, 1995–2009;
 				Marei Peischl (peiTeX)  <marei@peitex.de>, 2020;
 
@@ -37,10 +37,7 @@ Copyright (C)   Martin Schröder, 1994–2001
 % Don't display progress
 \keepsilent
 \askforoverwritefalse
-\generate{\file{prelim2e.sty}{\from{prelim2e.dtx}{package}}
-         \usepreamble\driverpreamble
-         \file{prelim2e.drv}{\from{prelim2e.dtx}{driver}}
-         }
+\generate{\file{prelim2e.sty}{\from{prelim2e.dtx}{package}}}
 
 \Msg{***********************************************************}
 \Msg{*}
