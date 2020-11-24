@@ -38,7 +38,7 @@
 %<*driver>
 \ProvidesFile{prelim2e.drv}
       [2020/11/22 v2.0 Driver for prelim2e Package]
-\documentclass{ltxdoc}
+\documentclass{l3doc}
 \usepackage{url}
 \DeclareUrlCommand\CTANlink{\def\UrlLeft{CTAN:\space}\def\UrlRight{}\urlstyle{tt}}
 \usepackage{geometry}
@@ -157,8 +157,7 @@
 %  \mbox{\cs{usepackage\{}\package{prelim2e}\texttt{\}}} produces a
 %  text in the form of ``Preliminary version -- \today''.
 %
-%  \DescribeMacro{\PrelimText}
-%  \DescribeMacro{\PrelimWords}
+% \begin{function}{\PrelimText,\PrelimWords}
 %  The text is produced by the commands \cs{PrelimText} and 
 %  \cs{PrelimWords}, which can be changed via \cs{renewcommand} or by 
 %  using options at the \cs{usepackage} command (see 
@@ -166,16 +165,18 @@
 %
 %  The footer for this documentation was produced by changing 
 %  \cs{PrelimWords} to
-%  \begin{quote}
 %\begin{verbatim}
-%\renewcommand{\PrelimWords}{%
-%   \textsf{prelim2e} package --
-%   Version \fileversion (\svnInfoRevision) --
-%   Documentation \LaTeX{}ed%
-%   }
+%  \renewcommand*{\PrelimWords}{%
+%    \textsf{prelim2e} package --
+%    Version \fileversion --
+%    Documentation \LaTeX{}ed%
+% }
 %\end{verbatim}
-%  \end{quote}
+% \end{function}
 %
+%  \begin{function}{\PrelimTextStyle}
+%  The style of the Text can be controlled by \cs{PrelimTextStyle}. This can also be adjusted using \cs{renewcommand*}. The default is set empty, but will use the default font in footnotesie.
+%  \end{function}
 %
 % ^^A -----------------------------
 %
@@ -328,11 +329,13 @@
 % ^^A -----------------------------
 %
 %  \section{The implementation}
-%
 %    \begin{macrocode}
 %<*package>
 %    \end{macrocode}
-%
+%    \begin{macrocode}
+%<@@=prelim>
+%    \end{macrocode}
+
 %
 % ^^A -----------------------------
 %
@@ -343,42 +346,47 @@
 %    \begin{macrocode}
 \providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
 \IfFormatAtLeastTF{2020/10/01}{}{%
-	\PackageError{prelim2e}{Format file is too old. Please update your LaTeX distribution.}{prelim2e of version 2.0 requires a format version of at least 2020/10/01}%
+  \PackageError{prelim2e}{
+    Format file is too old. Please update your LaTeX distribution.
+  }{
+    prelim2e of version 2.0 requires a format version of at least 2020/10/01
+  }%
 }
 %    \end{macrocode}
 
 %  ^^A
-%  \begin{macro}{\if@prelim@draft}
-%  \cs{if@prelim@draft} is used to flag the use of the \option{draft}
+%  \begin{variable}{\g_prelim_draft_bool}
+%  \cs{g_prelim_draft_bool} is used to flag the use of the \option{draft}
 %  or \option{final} option.
 %    \begin{macrocode}
 \bool_new:N \g_prelim_draft_bool
 %    \end{macrocode}
-%  \end{macro}
+%  \end{variable}
 %
-%  \begin{macro}{\if@prelim@time}
+%  \begin{variable}{\g_prelim_time_bool}
 %     \changes{v1.10}{1996/01/01}{new}
-%  \cs{if@prelim@time} is used to flag the use of the \option{time}
+%  \cs{g_prelim_time_bool} is used to flag the use of the \option{time}
 %  option.
 %    \begin{macrocode}
 \bool_new:N \g_prelim_time_bool
 %    \end{macrocode}
-%  \end{macro}
+%  \end{variable}
 %
-%  \begin{macro}{\if@prelim@scrtime}
+%  \begin{variable}{\g_prelim_scrtime_bool}
 %     \changes{v1.20}{1997/05/12}{new}
-%  \cs{if@prelim@scrtime} is used to flag the use of the \option{scrtime}
+%  \cs{g_prelim_scrtime_bool} is used to flag the use of the \option{scrtime}
 %  option.
 %    \begin{macrocode}
 \bool_new:N \g_prelim_scrtime_bool
 %    \end{macrocode}
-%  \end{macro}
+%  \end{variable}
+%
 %
 %  \begin{macro}{\PrelimWords}
 %  \cs{PrelimWords} holds the language-dependend text used in 
 %  \cs{PrelimText}
 %    \begin{macrocode}
-\newcommand{\PrelimWords}{}
+\newcommand*{\PrelimWords}{}
 %    \end{macrocode}
 %  \end{macro}
 %
@@ -506,20 +514,19 @@
 %  We first have to reset the style and size, otherwise the settings in
 %  effect at the point of text where \cs{ouput} is called would be used.
 %    \begin{macrocode}
-\newcommand{\PrelimText}{%
-   \textnormal{%
-      \footnotesize
-      \PrelimTextStyle
-      \PrelimWords{} -- \today
-      \bool_if:NT \g_prelim_time_bool {
-         \ ~--
-		\thistime
-		}
-	}%
+\newcommand{\PrelimText}{
+  \textnormal{
+    \footnotesize
+    \PrelimTextStyle
+    \PrelimWords{}~--~\today~
+    \bool_if:NT \g_prelim_time_bool {
+      \ --~
+      \thistime~
    }
+  }
+}
 %    \end{macrocode}
 %  \end{macro}
-%
 %  \begin{macro}{\PrelimTextStyle}
 %  \cs{PrelimTextStyle} controls the style of the text produced by
 %  \cs{PrelimText}.
@@ -536,49 +543,54 @@
 %  ^^A
 % \changes{v2.00}{2020/11/22}{Use \LaTeX{} kernel method instead of everyshi}
 %  We put the text below the page via \cs{AddtoHook{shipout/foreground}}.
-%  This is done by \cs{@Prelim@EveryShipout}.
+%  This is done by \cs{\__prelim_every_shipout:}.
 %
-%  \begin{macro}{\@Prelim@EveryShipout}
+% Save the shipout origins to macros to adjust the position of the the
+% PrelimText similar to the older versions of prelim2e.
+%    \begin{macrocode}
+\tl_const:Nx \c__prelim_horigin_tl {
+  \tl_if_exist:NTF \c__shipout_horigin_tl {
+    \c__shipout_horigin_tl
+  } {
+    1in
+  }
+}
+
+\tl_const:Nx \c__prelim_vorigin_tl {
+  \tl_if_exist:NTF \c__shipout_vorigin_tl {
+    \c__shipout_vorigin_tl
+  } {
+    1in
+  }
+}
+
+%    \end{macrocode}
+%  \begin{function}{\__prelim_every_shipout:}
 %  \changes{v1.10}{1996/01/01}{\cs{hbox to}$\rightarrow$\cs{hb@xt@}}
 %  \changes{v1.24}{2004/03/28}{Bugfix: Add missing \%.
 %                              Bug reported by Carsten Heinz (\texttt{cheinz@gmx.de}).}
 %  \cs{@Prelim@EveryShipout} puts the text produced by \cs{PrelimText}
 %  below the page. We do this using expl3-Syntax to directly access the measures of
 %  the shipout box.
-%TODO
 %    \begin{macrocode}
-\tl_const:Nx \c__prelim_horigin_tl {
-	\tl_if_exist:NTF \c__shipout_horigin_tl {
-		\c__shipout_horigin_tl
-	} {
-		1in
-	}
-}
-
-\tl_const:Nx \c__prelim_vorigin_tl {
-	\tl_if_exist:NTF \c__shipout_vorigin_tl {
-		\c__shipout_vorigin_tl
-	} {
-		1in
-	}
-}
-
 \cs_new:Nn \__prelim_every_shipout: {
 %    \end{macrocode}
 %  We calculate the text position to match the implementation for versions before 2.0.
 %    \begin{macrocode}
-	\put( \c__shipout_horigin_tl,\dim_eval:n {-\c__shipout_vorigin_tl-\l_shipout_box_ht_plus_dp_dim-\topskip})
-	{
-		\vbox_to_ht:nn {0pt} {
-		\hbox_to_wd:nn {\l_shipout_box_wd_dim} {
-			\let\protect\relax
-			\hfill\PrelimText\hfill
-		}
-		}
-	}
+\put(\c__shipout_horigin_tl,\dim_eval:n {
+    -\c__shipout_vorigin_tl-\l_shipout_box_ht_plus_dp_dim-\topskip
+  })
+  {
+    \vbox_to_ht:nn {0pt} {
+      \hbox_to_wd:nn {\l_shipout_box_wd_dim} {
+        \let\protect\relax
+        \hfill\PrelimText\hfill
+      }
+    }
+  }
 }
 %    \end{macrocode}
-%  \end{macro}
+%  \end{function}
 %
 %
 % ^^A -----------------------------
