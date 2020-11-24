@@ -1,16 +1,47 @@
+% \iffalse meta-comment
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Copyright (C) Martin Schröder, 1994–2001
+% 				Marei Peischl (peiTeX)  <marei@peitex.de>, 2020
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is
+%   Marei Peischl <marei@peitex.de>.
+%
+% This work consists of the files
+% 	README.md
+% 	prelim2e.dtx
+% 	prelim2e.ins
+% and the derived files
+% 	prelim2e.sty
+% 	prelim2e.pdf
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \fi
 %     \changes{v1.01}{1995/05/02}{Date added to \cs{NeedsTeXFormat}}
 % \iffalse
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<package>\ProvidesPackage{prelim2e}
-%<package>         [2009/05/29 v1.3 prelim2e Package (MS)]
+%<package>         [2020/11/22 v2.0 prelim2e Package]
 %
 %<*driver>
 \ProvidesFile{prelim2e.drv}
-      [2009/05/29 v1.3 Driver for prelim2e Package (MS)]
-\documentclass[a4paper]{ltxdoc}
-\usepackage[T1]{fontenc}
+      [2020/11/22 v2.0 Driver for prelim2e Package]
+\documentclass{ltxdoc}
 \usepackage{url}
-\usepackage[toc]{multitoc}
+\DeclareUrlCommand\CTANlink{\def\UrlLeft{CTAN:\space}\def\UrlRight{}\urlstyle{tt}}
+
 \usepackage{lmodern,microtype,svn}
 \usepackage{hypdoc}
 \usepackage{geometry}
@@ -547,8 +578,8 @@
 %
 %  \subsection{Putting the text below the page}
 %  ^^A
-%  We put the text below the page via \cs{EveryShipout} provided by
-%  the \package{everyshi} package.
+% \changes{v2.00}{2020/11/22}{Use \LaTeX{} kernel method instead of everyshi}
+%  We put the text below the page via \cs{AddtoHook{shipout/foreground}}.
 %  This is done by \cs{@Prelim@EveryShipout}.
 %
 %  \begin{macro}{\@Prelim@EveryShipout}
@@ -634,4 +665,4 @@
 % ^^A -----------------------------
 %
 %  \Finale
-% ^^A vim:tw=70:ts=2
+% ^^A
