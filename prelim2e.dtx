@@ -74,24 +74,6 @@
    \let\PrintIndex\relax
 \end{document}
 %</driver>
-%
-% Copyright (C) 1995..2009 by Martin Schr\"oder.
-%
-% This work may be distributed and/or modified under the conditions of the
-% LaTeX Project Public License, either version 1.3 of this license or (at your
-% option) any later version.
-% The latest version of this license is in
-%   http://www.latex-project.org/lppl.txt
-% and version 1.3 or later is part of all distributions of LaTeX version
-% 2005/12/01 or later.
-%
-% This work has the LPPL maintenance status `maintained'.
-% 
-% The Current Maintainer of this work is Martin Schröder
-%
-% This work consists of the files prelim2e.dtx and prelim2e.ins
-% and the derived files prelim2e.sty
-%
 % \fi
 %
 % \CheckSum{129}
@@ -112,28 +94,6 @@
 %%  Grave accent  \`     Left brace    \{     Vertical bar  \|
 %%  Right brace   \}     Tilde         \~}
 %%
-%% \iffalse meta-comment
-%% ===================================================================
-%%  @LaTeX-package-file{
-%%    author            = {Martin Schr\"oder},
-%%    version           = "1.3",
-%%    date              = "29 May 2009",
-%%    filename          = "prelim2e.sty",
-%%    address           = {Martin Schr\"oder
-%%                         Barmer Stra\"se 14
-%%                         44137 Dortmund
-%%                         Germany},
-%%    telephone         = "+49-231-1206574",
-%%    email             = "martin@oneiros.de",
-%     codetable         = "ISO/ASCII",
-%     keywords          = "LaTeX2e, preliminary versions, versions",
-%     dependences       = "everyshi, scrtime",
-%     supported         = "yes",
-%%    docstring         = "LaTeX package which allows the marking of
-%%                         preliminary versions of a document."
-%%  }
-%% ===================================================================
-%% \fi
 %
 % \SVN $Rev: 1374 $
 % \SVNdate $Date: 2009-05-30 22:23:36 +0200 (Sa, 30. Mai 2009) $
@@ -165,15 +125,8 @@
 %
 %  \title{\unskip
 %   The \package{prelim2e} package^^A
-%   \thanks{^^A
-%     The version number of this file is \fileversion, subversion
-%     revision~\#\SVNRev, last revised \protect\SVNDate.}^^A
 %        }
-%  \author{Martin Schr\"oder\\[0.5ex]
-%          \normalsize  Barmer Stra\ss{}e 14\\
-%          \normalsize  44137 Dortmund\\
-%          \normalsize  Germany\\
-%          \normalsize  \href{mailto:martin@oneiros.de}{\texttt{martin@oneiros.de}}}
+%  \author{Martin Schröder\thanks{maintained by Marei Peischl <marei@peitex.de>}}
 %  \maketitle
 %
 % ^^A -----------------------------
@@ -294,9 +247,6 @@
 %  ^^A
 %  The package requires the following packages:
 %  \begin{description}
-%     \item[\normalfont\package{everyshi}\cite{package:everyshi}]
-%        It is used to implement the setting of the text below the normal 
-%        pagebody.
 %     \item[\normalfont\package{scrtime}\cite{package:scrtime}]
 %           \changes{v1.10}{1996/01/01}{\package{scrtime} instead of 
 %              \package{printtim}}
@@ -529,10 +479,9 @@
 %  \subsection{Loading packages}
 %  ^^A
 %     \changes{v1.20}{1997/05/12}{check \cs{if@prelim@scrtime}}
-%  We need the \package{everyshi} package---and \package{scrtime}, if the
-%  \option{scrtime} option is specified.
+% 	  \canges{v2.00}{2020/11/22}{remove \package{everyshi}}
+%  We need the \package{scrtime} package if the \option{scrtime} option is specified.
 %    \begin{macrocode}
-\RequirePackage{everyshi}[1995/01/25]
 \if@prelim@scrtime
    \RequirePackage{scrtime}
 \fi
@@ -587,59 +536,23 @@
 %  \changes{v1.24}{2004/03/28}{Bugfix: Add missing \%.
 %                              Bug reported by Carsten Heinz (\texttt{cheinz@gmx.de}).}
 %  \cs{@Prelim@EveryShipout} puts the text produced by \cs{PrelimText}
-%  below the page.
-%  To do this we modify \cs{box255}: We append a \cs{vbox} with height
-%  and depth of 0pt and the width of \cs{box255} which contains a 
-%  \cs{hbox} with the width of \cs{box255} in which \cs{PrelimText}
-%  is centered.
+%  below the page. We do this using expl3-Syntax to directly access the measures of
+%  the shipout box.
+%TODO
 %    \begin{macrocode}
-\newcommand{\@Prelim@EveryShipout}{%
-   \bgroup
+\ExplSyntaxOn
+\newcommand{\@Prelim@EveryShipout}{
 %    \end{macrocode}
-%  First we save the dimensions of \cs{box255}: height, width and depth;
-%  and calculate the total height of \cs{box255}.
+%  We calculate the text position to match the implementation for versions before 2.0.
 %    \begin{macrocode}
-      \dimen\z@=\wd\@cclv
-      \dimen\@ne=\ht\@cclv
-      \dimen\tw@=\dp\@cclv
-      \dimen\thr@@=\dimen1
-      \advance\dimen\thr@@ by \dimen\tw@
-%    \end{macrocode}
-%  Then we set \cs{box255}: 
-%  A \cs{vbox} to the total height of \cs{box255}.
-%  In this a \cs{hbox} to the width of \cs{box255} is included, in which
-%  \cs{box255} is set.
-%    \begin{macrocode}
-      \global\setbox\@cclv\vbox to \dimen\thr@@{%
-         \hb@xt@\dimen\z@{%
-            \box\@cclv%
-            \hss
-            }%
-%    \end{macrocode}
-%  To this we append the text produced by \cs{PrelimText}.
-%  It is put in a \cs{vbox} to 0pt in which a \cs{hbox} to the width of 
-%  \cs{box255} is included, in which \cs{PrelimText} is set.
-%  We have to reset \cs{protect} because it is set to \cs{noexpand} by
-%  the output routine.
-%    \begin{macrocode}
-         \vbox to \z@{%
-            \hb@xt@\dimen\z@{%
-               \let\protect\relax
-               \hfill\PrelimText\hfill
-               }%
-            \vss
-            }%
-         \vss
-         }%
-%    \end{macrocode}
-%  Finally we set the dimensions of \cs{box255} to the values they had
-%  before \cs{@Prelim@EveryShipout}.
-%    \begin{macrocode}
-      \wd\@cclv=\dimen\z@
-      \ht\@cclv=\dimen\@ne
-      \dp\@cclv=\dimen\tw@
-   \egroup
-   }
+	\put(0cm,\dim_eval:n {-\l_shipout_box_ht_plus_dp_dim-1in+\topskip}){
+		\hbox_to_wd:nn {\l_shipout_box_wd_dim} {
+			\let\protect\relax
+			\hfill\PrelimText\hfill
+		}
+	}
+}
+\ExplSyntaxOff
 %    \end{macrocode}
 %  \end{macro}
 %
@@ -648,12 +561,12 @@
 %
 %  \subsection{Tieing \package{prelim2e} into the system}
 %  ^^A
-%  \cs{@Prelim@EveryShipout} is tied into the system via 
-%  \cs{EveryShipout}.
+%  \cs{@Prelim@EveryShipout} is tied into the system using the
+%  kernel's hook management.
 %  But only if the \option{draft} option is used.
 %    \begin{macrocode}
 \if@prelim@draft
-   \EveryShipout{\@Prelim@EveryShipout}
+  \AddToHook{shipout/foreground}{\@Prelim@EveryShipout}
 \fi
 %    \end{macrocode}
 %
